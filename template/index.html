@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="icon" type="image/png" href="../images/cloudy.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+
+    <div class = "main-container">
+
+        <header class = "weather-header">
+            <h1>Weather</h1>
+            <div class = "unit-toggel">
+                <button class = "unitBtn unitBtn-active">°C</button>
+                <button class = "unitBtn">°F</button>
+            </div>
+        </header>
+
+        <div>
+            <form class = "search-form">
+                <input class = "search-inp" value = '' placeholder="Enter city name" type = "text">
+                <button class = "search-btn">
+                    <img class = "search-icon" src = "../images/magnifying-glass-solid-full.svg">
+                </button>
+            </form>
+
+            <button class = 'locationBtn'>
+                <img class = "metric-icon" src = "../images/output-onlinepngtools.png">
+                Use current location
+            </button>
+        </div>
+
+        <main class = "hide">
+
+            <div class = "weather-main">
+
+                <div class = "current-weather">
+                    <img class = "current-weather-icon" src = "">
+                    <div class = "temperature-details">
+                        <p class = "temperature-value"></p>
+                        <p class = "description"></p>
+                    </div>
+                </div>
+
+                <div class = "hourly-history">
+                    <div class = "hourly-history-header">
+                        <p class = "section-title">Hourly History</p>
+                        <p>Last 5 hours</p>
+                    </div>
+                    <div class = "hourly-history-list"></div>
+                </div>
+                
+            </div>
+
+            <div class = "weather-metrics">
+                
+                <div class = "weather-metric">
+                    <div class = 'weather-metric-header'>
+                        <img class = "metric-icon" src = "../images/10480648.png">
+                        <p>VISIBILITY</p>
+                    </div>
+                    <p class = "weather-metric-value">0 <span>km</span></p>
+                </div>
+                
+                <div class = "weather-metric">
+                    <div class = 'weather-metric-header'>
+                        <img class = "metric-icon" src = "../images/humidity.png">
+                        <p>HUMIDITY</p>
+                    </div>
+                    <p class = "weather-metric-value">0 %</p>
+                </div>
+
+                <div class = "weather-metric">
+                    <div class = 'weather-metric-header'>
+                        <img class = "metric-icon" src = "../images/uv-index.png">
+                        <p>UV INDEX</p>
+                    </div>
+                    <p class = "weather-metric-value">0</p>
+                </div>
+
+                <div class = "weather-metric">
+                    <div class = 'weather-metric-header'>
+                        <img class = "metric-icon" src = "../images/full-moon-halloween-night-sky-covered-by-clouds.png">
+                        <p>CLOUD COVER</p>
+                    </div>
+                    <p class = "weather-metric-value">0 %</p>
+                </div>
+            
+            </div>
+
+        </main>
+        
+    </div>
+
+    <script src = "../app.js"></script>
+</body>
+</html>
