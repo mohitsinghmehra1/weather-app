@@ -21,6 +21,8 @@ let convert = '°C'
 
 unitToggel.addEventListener('click', (event) => {
     const btn = event.target;
+    if(btn.tagName != 'BUTTON') return;
+    
     const unit = btn.textContent.trim();
     if (unit === convert) return;
     
