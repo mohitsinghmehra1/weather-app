@@ -14,30 +14,28 @@ const weatherIcon = document.querySelector('.current-weather-icon');
 const [vis, humidity, uv, cloudCover] = document.querySelectorAll('.weather-metric-value');
 const history = document.querySelector('.hourly-history').lastElementChild;
 
-const convertBtns = document.querySelectorAll('.unitBtn');
+const unitToggel = document.querySelector('.unit-toggel');
 
 let [weatherData, pastData, latitude, longitude] = [null, null, null, null]; 
 let convert = '°C'
 
-convertBtns.forEach((btn) => {
-    btn.addEventListener('click', (event) => {
-        const unit = btn.textContent.trim();
-        if (unit === convert) return;
-        
-        convert = unit;
-        
-        convertBtns[0].classList.remove('unitBtn-active');
-        convertBtns[1].classList.remove('unitBtn-active');
-        btn.classList.add('unitBtn-active');
-        
-        if(weatherData) {
-            currentUpdate(weatherData);
-        }
+unitToggel.addEventListener('click', (event) => {
+    const btn = event.target;
+    const unit = btn.textContent.trim();
+    if (unit === convert) return;
+    
+    convert = unit;
+    
+    unitToggel.querySelector('.unitBtn-active').classList.remove('unitBtn-active');
+    btn.classList.add('unitBtn-active');
+    
+    if(weatherData) {
+        currentUpdate(weatherData);
+    }
 
-        if (pastData) {
-            historyUpdate(pastData);
-        }
-    });
+    if (pastData) {
+        historyUpdate(pastData);
+    }
 });
 
 const todayDate = () => {
@@ -82,6 +80,11 @@ showCountryName = (city) => {
 }
 
 locationBtn.addEventListener('click', async (event) => {   
+
+    const pr = await getLocationCoordinate();
+    console.log('fetched location');
+    latitude = pr.coords.latitude;
+    longitude = pr.coords.longitude;
     
     if ((latitude == null) && (longitude == null)) {
         alert('Cannot fetch the locaion of user....');
@@ -139,7 +142,6 @@ async function getLocationCoordinate(){
 function currentUpdate(data) {
 
     // Current Weather Informtion Update
-    console.log(data);
     temperature.textContent = `${convert === '°C'? data.temp_c : data.temp_f} ${convert}`;
     description.textContent = data.condition.text;
     weatherIcon.setAttribute('src', data.condition.icon.replace('//', 'https://'));
@@ -196,11 +198,3 @@ async function getData(url) {
         return null;
     }
 }
-
-document.addEventListener('DOMContentLoaded', async () => {
-    const pr = await getLocationCoordinate();
-    console.log('fetched location');
-    
-    latitude = pr.coords.latitude;
-    longitude = pr.coords.longitude;
-})
