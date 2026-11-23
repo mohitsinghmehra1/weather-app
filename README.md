@@ -12,6 +12,8 @@ A clean, responsive weather app built with vanilla HTML, CSS, and JavaScript. Se
 - **🕐 Hourly history:** View temperature and conditions for the last 5 hours.
 - **📊 Weather metrics:** Track visibility, humidity, UV index, and cloud cover.
 - **📱 Responsive design:** Scales down smoothly for tablets and small phones.
+- **💾 Remembers your preferences:** Saves your last searched city and °C/°F choice in `localStorage`, and reloads them automatically on your next visit.
+- **🏷️ City heading:** Shows the searched city name above the current weather.
 
 ---
 
@@ -22,6 +24,7 @@ A clean, responsive weather app built with vanilla HTML, CSS, and JavaScript. Se
 - **JavaScript** (ES6+, `async/await`, Fetch API, Geolocation API)
 - **WeatherAPI.com** (`current.json` and `history.json` endpoints)
 - **Google Fonts** (Poppins)
+- **Web Storage API** (localStorage)
 
 ---
 
@@ -53,7 +56,7 @@ weather-app/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com
+git clone https://github.com/mohitsinghmehra1/weather-app.git
 cd weather-app
 ```
 
@@ -97,6 +100,8 @@ Open `templates/index.html` directly in your browser, or run it using a local se
 - `currentUpdate()` renders the current temperature, weather condition, icon, and metrics.
 - `historyUpdate()` slices the last 5 hours from today's hourly data and builds the history cards.
 - Unit toggling re-renders directly from the stored data, so no extra API calls are made.
+- `loadapp()` restores the saved unit and city from `localStorage` on page load and automatically runs the search.
+- `getData()` wraps each fetch with error handling and returns `null` on failure, so `fetchWeather()` can report errors cleanly.
 
 ---
 

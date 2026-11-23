@@ -1,7 +1,5 @@
-console.log('Successfully Loaded');
-
 const apiKey = 'd211f6b14ade4b58be6181553261411'; 
-const apiUrl = 'http://api.weatherapi.com/v1';
+const apiUrl = 'https://api.weatherapi.com/v1';
 
 const inp = document.querySelector('input');
 const searchBtn = document.querySelector('.search-btn');
@@ -17,16 +15,15 @@ const history = document.querySelector('.hourly-history').lastElementChild;
 const unitToggel = document.querySelector('.unit-toggel');
 
 let [weatherData, pastData, latitude, longitude] = [null, null, null, null]; 
-let convert = '°C'
 
 unitToggel.addEventListener('click', (event) => {
     const btn = event.target;
     if(btn.tagName != 'BUTTON') return;
     
     const unit = btn.textContent.trim();
-    if (unit === convert) return;
+    if (unit === localStorage.getItem('convert')) return;
     
-    convert = unit;
+    localStorage.setItem('convert', unit);
     
     unitToggel.querySelector('.unitBtn-active').classList.remove('unitBtn-active');
     btn.classList.add('unitBtn-active');
@@ -55,6 +52,7 @@ searchBtn.addEventListener('click', async (event) => {
 
     const city = inp.value.trim();
     if (!city) return;
+    localStorage.setItem('city', city);
 
     const ok = await fetchWeather(
         `${apiUrl}/current.json?key=${apiKey}&q=${encodeURIComponent(city)}`,
@@ -144,7 +142,7 @@ async function getLocationCoordinate(){
 function currentUpdate(data) {
 
     // Current Weather Informtion Update
-    temperature.textContent = `${convert === '°C'? data.temp_c : data.temp_f} ${convert}`;
+    temperature.textContent = `${localStorage.getItem('convert') === '°C'? data.temp_c : data.temp_f} ${localStorage.getItem('convert')}`;
     description.textContent = data.condition.text;
     weatherIcon.setAttribute('src', data.condition.icon.replace('//', 'https://'));
 
@@ -173,7 +171,7 @@ function historyUpdate(pastData) {
 
         const temp = document.createElement('p');
         temp.classList.add('past-temperature');
-        temp.textContent = `${convert === '°C' ? lastfivehourdata[i].temp_c : lastfivehourdata[i].temp_f} ${convert}`;
+        temp.textContent = `${localStorage.getItem('convert') === '°C' ? lastfivehourdata[i].temp_c : lastfivehourdata[i].temp_f} ${localStorage.getItem('convert')}`;
         
         const condition = document.createElement('p');
         condition.textContent = lastfivehourdata[i].condition.text;
@@ -200,3 +198,20 @@ async function getData(url) {
         return null;
     }
 }
+
+function loadapp() {
+    if(localStorage.getItem('convert') === '°F') {
+        unitToggel.lastElementChild.classList.add('unitBtn-active');
+    }
+    else {
+        unitToggel.firstElementChild.classList.add('unitBtn-active');
+    }
+
+    inp.value = localStorage.getItem('city');
+    searchBtn.dispatchEvent(new Event('click', () => {}));
+}
+
+document.addEventListener('DOMContentLoaded', () => {   
+    console.log('Successfully Loaded');
+    loadapp();
+});
