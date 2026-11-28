@@ -12,6 +12,7 @@ const weatherIcon = document.querySelector('.current-weather-icon');
 const [vis, humidity, uv, cloudCover] = document.querySelectorAll('.weather-metric-value');
 const history = document.querySelector('.hourly-history').lastElementChild;
 
+const loader = document.querySelector('.loader-container');
 const unitToggel = document.querySelector('.unit-toggel');
 
 let [weatherData, pastData, latitude, longitude] = [null, null, null, null]; 
@@ -49,25 +50,28 @@ const todayDate = () => {
 
 searchBtn.addEventListener('click', async (event) => {
     event.preventDefault();
-
     const city = inp.value.trim();
     if (!city) return;
-    localStorage.setItem('city', city);
 
-    const ok = await fetchWeather(
-        `${apiUrl}/current.json?key=${apiKey}&q=${encodeURIComponent(city)}`,
-        `${apiUrl}/history.json?key=${apiKey}&q=${encodeURIComponent(city)}&date=${todayDate()}`
-    )
+    loader.classList.add('visible');
+    try {
+        const ok = await fetchWeather(
+            `${apiUrl}/current.json?key=${apiKey}&q=${encodeURIComponent(city)}`,
+            `${apiUrl}/history.json?key=${apiKey}&q=${encodeURIComponent(city)}&date=${todayDate()}`
+        )
 
-    if(!ok) {
-         alert('Could not fetch weather for your location.');
-         return;
+        if (!ok) throw new Error('Weather fetch failed');
+
+        currentUpdate(weatherData);
+        historyUpdate(pastData);
+        showCountryName(city);
+        localStorage.setItem('city', city);
+    } catch (error) {
+        console.log('Could not fetch weather for your location.');
+    } finally {
+        loader.classList.remove('visible');
+        document.querySelector('main').classList.remove('hide');
     }
-
-    document.querySelector('main').classList.replace('hide', 'visible');
-    currentUpdate(weatherData);
-    historyUpdate(pastData);
-    showCountryName(city);
 });
 
 showCountryName = (city) => {
@@ -80,35 +84,34 @@ showCountryName = (city) => {
 }
 
 locationBtn.addEventListener('click', async (event) => {   
+    try {
+        const pr = await getLocationCoordinate();
+        console.log('fetched location');
 
-    const pr = await getLocationCoordinate();
-    console.log('fetched location');
-    latitude = pr.coords.latitude;
-    longitude = pr.coords.longitude;
-    
-    if ((latitude == null) && (longitude == null)) {
-        alert('Cannot fetch the locaion of user....');
-        return;
+        latitude = pr.coords.latitude;
+        longitude = pr.coords.longitude;
+
+        const ok = await fetchWeather(
+            `${apiUrl}/current.json?key=${apiKey}&q=${encodeURIComponent(city)}`,
+            `${apiUrl}/history.json?key=${apiKey}&q=${encodeURIComponent(city)}&date=${todayDate()}`
+        )
+
+        if (!ok) throw new Error('Weather fetch failed');
+
+        currentUpdate(weatherData);
+        historyUpdate(pastData);
+        showCountryName(city);
+        localStorage.setItem('city', city);
+
+    } catch (error) {
+        console.log('Unable to fetch weather or access your location.');
+    } finally {
+        loader.classList.remove('visible');
+        document.querySelector('main').classList.remove('hide');
     }
-
-    const ok = await fetchWeather(
-        `${apiUrl}/current.json?key=${apiKey}&q=${latitude},${longitude}`,
-        `${apiUrl}/history.json?key=${apiKey}&q=${latitude},${longitude}&date=${todayDate()}`
-    )
-
-    if(!ok) {
-         alert('Could not fetch weather for your location.');
-         return;
-    }
-
-    document.querySelector('main').classList.replace('hide', 'visible');
-    currentUpdate(weatherData);
-    showCountryName();
-    historyUpdate(pastData);
 });
 
 async function fetchWeather(query1, query2) {
-
     const [cresponse, presponse] = await Promise.all([
         getData(query1),
         getData(query2)
@@ -140,17 +143,16 @@ async function getLocationCoordinate(){
 }
 
 function currentUpdate(data) {
-
     // Current Weather Informtion Update
     temperature.textContent = `${localStorage.getItem('convert') === '°C'? data.temp_c : data.temp_f} ${localStorage.getItem('convert')}`;
     description.textContent = data.condition.text;
     weatherIcon.setAttribute('src', data.condition.icon.replace('//', 'https://'));
 
     // Current Other Weather Informtion Update
-    vis.textContent = data.vis_km;
-    humidity.textContent = data.humidity;
+    vis.textContent = `${data.vis_km} Km`;
+    humidity.textContent = `${data.humidity} %`;
     uv.textContent = data.uv;
-    cloudCover.textContent = data.cloud;
+    cloudCover.textContent = `${data.cloud} %`;
 }
 
 function historyUpdate(pastData) {
@@ -204,11 +206,13 @@ function loadapp() {
         unitToggel.lastElementChild.classList.add('unitBtn-active');
     }
     else {
+        localStorage.setItem('convert', '°C');
         unitToggel.firstElementChild.classList.add('unitBtn-active');
     }
 
     inp.value = localStorage.getItem('city');
     searchBtn.dispatchEvent(new Event('click', () => {}));
+    inp.value = '';
 }
 
 document.addEventListener('DOMContentLoaded', () => {   

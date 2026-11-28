@@ -17,6 +17,7 @@ html {
 body {
     display: flex;
     align-items: center;
+    flex-direction: column;
     justify-content: center;
     min-height: 100svh;
     height: auto;
@@ -37,11 +38,11 @@ h1, h2 {
 }
 
 h1 {
-    font-size: 38px;
+    font-size: 3rem;
 }
 
 h2 {
-    font-size: 32px;
+    font-size: 3.2rem;
 }
 
 p {
@@ -52,11 +53,11 @@ p {
 }
 
 .visible {
-    display: block;
+    display: flex;
 }
 
 .hide {
-    display: none;;
+    display: none;
 }
 
 span {
@@ -90,7 +91,8 @@ input {
         145deg,
         #1A3E59,
         #2d6087
-    );   
+    );  
+    position: relative;
     padding: 2rem;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
 }
@@ -239,10 +241,14 @@ input {
 }
 
 .temperature-value {
-    font-size: 6.2rem;
+    font-size: 4.8rem;
     color: #ffffff;
     line-height: 1;
     font-weight: 700;
+}
+
+.description {
+    font-size: 2rem;
 }
 
 .temperature-details {
@@ -339,10 +345,54 @@ input {
     color: #ffffff;
 }
 
+/* ================================
+   Loader
+================================ */
+.loader {
+    width: 9rem;
+    height: 9rem;
+    background-color: #25435a;
+    border: 10px solid white;
+    border-top: 10px solid #ffab10;
+    border-right: 10px solid linear-gradient(to bottom, #ffab10); 
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
 
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
 
+.loader-container {
+    display: none;
+    flex-direction: column;
+    gap: 3rem;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    width: 90%;
+    height: 50%;
+    transform: translate(50%, -50%);
+    background-color: #244a67d2;
+}
 
+.loader-container p {
+    font-size: 3rem;
+    color: white;
+    font-weight: 800;
+}
 
+.visible {
+    display: flex;
+}
 
 
 
